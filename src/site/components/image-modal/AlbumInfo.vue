@@ -4,7 +4,6 @@
 			:value="selectedAlbums"
 			:data="filteredAlbums"
 			class="chibisafe albuminp"
-			ellipsis
 			icon="label"
 			placeholder="Add to an album"
 			autocomplete

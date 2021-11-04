@@ -4,7 +4,6 @@
 			:value="selectedTags"
 			:data="filteredTags"
 			class="chibisafe taginp"
-			ellipsis
 			icon="label"
 			placeholder="Add a tag"
 			autocomplete
