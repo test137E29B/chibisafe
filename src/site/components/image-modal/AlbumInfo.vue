@@ -42,7 +42,6 @@ export default {
 		lowercaseAlbums() { return this.imageAlbums.map(e => e.name.toLowerCase()); }
 	},
 	created() {
-		this.orderedAlbums = this.getOrderedAlbums();
 		// we're sorting here instead of computed because we want sort on creation
 		// then the array's values should be frozen
 		this.selectedOptions = this.imageAlbums.map(e => e.id);
