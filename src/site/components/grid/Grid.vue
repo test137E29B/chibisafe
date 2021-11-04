@@ -230,6 +230,7 @@ export default {
 		if (!this.isPublic) {
 			this.$handler.executeAction('albums/getTinyDetails', null, false);
 			this.$handler.executeAction('tags/fetch', null, false);
+			this.$handler.executeAction('albums/fetch', null, false);
 		}
 
 		this.showList = this.images.showList;

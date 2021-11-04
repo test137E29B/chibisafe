@@ -102,7 +102,7 @@
 					<div class="divider is-chibisafe has-text-light">
 						Albums
 					</div>
-					<Albuminfo :image-id="file.id" :image-albums="albums" :albums="tinyDetails" />
+					<Albuminfo :image-id="file.id" :image-albums="albums" />
 				</div>
 			</div>
 		</div>
