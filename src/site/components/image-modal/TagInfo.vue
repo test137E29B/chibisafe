@@ -41,6 +41,15 @@ export default {
 		selectedTags() { return this.imageTags.map(e => e.name); },
 		lowercaseTags() { return this.imageTags.map(e => e.name.toLowerCase()); }
 	},
+	created() {
+		this.$on('click', e => {
+			// If an element with the class tag is clicked, stop propagation
+			if (e.target.classList.contains('tag')) {
+				e.stopPropagation();
+				return false;
+			}
+		});
+	},
 	methods: {
 		getFilteredTags(str) {
 			this.filteredTags = this.tags.map(e => e.name).filter(e => {
