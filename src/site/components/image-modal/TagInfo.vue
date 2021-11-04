@@ -43,6 +43,7 @@ export default {
 	},
 	created() {
 		this.$on('click', e => {
+			console.info(e.target.classList);
 			// If an element with the class tag is clicked, stop propagation
 			if (e.target.classList.contains('tag')) {
 				e.stopPropagation();
