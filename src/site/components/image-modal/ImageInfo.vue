@@ -1,5 +1,5 @@
 <template>
-	<div class="container has-background-chibisafe">
+	<div class="container has-background-chibisafe ">
 		<div class="columns is-marginless">
 			<div class="column image-col has-centered-items">
 				<img v-if="!isVideo(file.type)" class="col-img" :src="file.url">
@@ -207,5 +207,8 @@ export default {
 	@media screen and (max-width: 769px) {
 		padding-bottom: 3rem;
 	}
+
+  /* This prevents the suggestions from showing under the input box if there are too many */
+	overflow-y: hidden;
 }
 </style>
