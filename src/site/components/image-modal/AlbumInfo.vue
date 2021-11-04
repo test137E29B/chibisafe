@@ -1,29 +1,23 @@
 <template>
-	<b-dropdown
-		v-model="selectedOptions"
-		multiple
-		expanded
-		scrollable
-		inline
-		aria-role="list"
-		max-height="500px">
-		<button slot="trigger" class="button is-primary" type="button">
-			<span>Albums ({{ selectedOptions.length }})</span>
-			<b-icon icon="menu-down" />
-		</button>
-
-		<b-dropdown-item
-			v-for="album in orderedAlbums"
-			:key="album.id"
-			:value="album.id"
-			aria-role="listitem"
-			@click="handleClick(album.id)">
-			<span>{{ album.name }}</span>
-		</b-dropdown-item>
-	</b-dropdown>
+	<b-field label="Add some albums">
+		<b-taginput
+			:value="selectedAlbums"
+			:data="filteredAlbums"
+			class="chibisafe albuminp"
+			ellipsis
+			icon="label"
+			placeholder="Add to an album"
+			autocomplete
+			allow-new
+			@typing="getFilteredAlbums"
+			@add="albumAdded"
+			@remove="albumRemoved" />
+	</b-field>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
 	name: 'Albuminfo',
 	props: {
@@ -34,17 +28,19 @@ export default {
 		imageAlbums: {
 			'type': Array,
 			'default': () => []
-		},
-		albums: {
-			'type': Array,
-			'default': () => []
 		}
 	},
 	data() {
 		return {
-			selectedOptions: [],
-			orderedAlbums: []
+			filteredAlbums: []
 		};
+	},
+	computed: {
+		...mapState({
+			albums: state => state.albums.list
+		}),
+		selectedAlbums() { return this.imageAlbums.map(e => e.name); },
+		lowercaseAlbums() { return this.imageAlbums.map(e => e.name.toLowerCase()); }
 	},
 	created() {
 		this.orderedAlbums = this.getOrderedAlbums();
@@ -53,38 +49,61 @@ export default {
 		this.selectedOptions = this.imageAlbums.map(e => e.id);
 	},
 	methods: {
-		getOrderedAlbums() {
-			return [...this.albums].sort(
-				(a, b) => {
-					const selectedA = this.imageAlbums.findIndex(({ name }) => name === a.name) !== -1;
-					const selectedB = this.imageAlbums.findIndex(({ name }) => name === b.name) !== -1;
+		getFilteredAlbums(str) {
+			this.filteredAlbums = this.albums.map(e => e.name).filter(e => {
+				// check if the search string matches any of the albums
+				const sanitezedAlbumName = e.toString().toLowerCase();
+				const matches = sanitezedAlbumName.indexOf(str.toLowerCase()) >= 0;
 
-					if (selectedA !== selectedB) {
-						return selectedA ? -1 : 1;
+				// check if this album is already added to our image, to avoid duplicates
+				if (matches) {
+					const foundIndex = this.lowercaseAlbums.indexOf(sanitezedAlbumName);
+					if (foundIndex === -1) {
+						return true;
 					}
-					return a.name.localeCompare(b.name);
 				}
-			);
+
+				return false;
+			});
 		},
-		isAlbumSelected(id) {
-			if (!this.showingModalForFile) return false;
-			const found = this.showingModalForFile.albums.find(el => el.id === id);
-			return Boolean(found && found.id);
-		},
-		async handleClick(id) {
-			// here the album should be already removed from the selected list
-			if (this.selectedOptions.indexOf(id) > -1) {
-				this.$handler.executeAction('images/addToAlbum', {
-					albumId: id,
-					fileId: this.imageId
-				});
-			} else {
-				this.$handler.executeAction('images/removeFromAlbum', {
-					albumId: id,
-					fileId: this.imageId
-				});
+		async albumAdded(album) {
+			if (!album) return;
+
+			// normalize into NFC form (diactirics and moonrunes)
+			// replace all whitespace with _
+			// replace multiple __ with a single one
+			album = album.normalize('NFC').replace(/\s/g, '_').replace(/_+/g, '_');
+
+			const foundIndex = this.albums.findIndex(({ name }) => name === album);
+
+			if (foundIndex === -1) {
+				await this.$handler.executeAction('albums/createAlbum', album);
 			}
+			const albumId = this.albums.find(({ name }) => name === album).id;
+
+			this.$handler.executeAction('images/addToAlbum', {
+				albumId,
+				fileId: this.imageId
+			});
+		},
+		albumRemoved(album) {
+			const albumId = this.albums.find(({ name }) => name === album).id;
+			this.$handler.executeAction('images/removeFromAlbum', {
+				albumId,
+				fileId: this.imageId
+			});
 		}
 	}
 };
 </script>
+
+<style lang="scss" scoped>
+@import '~/assets/styles/_colors.scss';
+
+.albuminp {
+	::v-deep .dropdown-content {
+		background-color: #323846;
+		box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+	}
+}
+</style>
