@@ -42,12 +42,16 @@ export default {
 		lowercaseTags() { return this.imageTags.map(e => e.name.toLowerCase()); }
 	},
 	mounted() {
-		this.$el.addEventListener('click', this.onClick);
+		document.addEventListener('click', this.onClick);
+	},
+	beforeDestroy() {
+		document.removeEventListener('click', this.onClick);
 	},
 	methods: {
+		// This fixes the issue of the taginput not allowing copying of the text
+		// if the user clicks on the tag.
 		onClick(e) {
 			console.info(e.target.classList);
-			// If an element with the class tag is clicked, stop propagation
 			if (e.target.classList.contains('tag')) {
 				e.stopPropagation();
 				return false;
