@@ -41,22 +41,7 @@ export default {
 		selectedTags() { return this.imageTags.map(e => e.name); },
 		lowercaseTags() { return this.imageTags.map(e => e.name.toLowerCase()); }
 	},
-	mounted() {
-		document.addEventListener('click', this.onClick);
-	},
-	beforeDestroy() {
-		document.removeEventListener('click', this.onClick);
-	},
 	methods: {
-		// This fixes the issue of the taginput not allowing copying of the text
-		// if the user clicks on the tag.
-		onClick(e) {
-			console.info(e.target.classList);
-			if (e.target.classList.contains('tag')) {
-				e.stopPropagation();
-				return false;
-			}
-		},
 		getFilteredTags(str) {
 			this.filteredTags = this.tags.map(e => e.name).filter(e => {
 				// check if the search string matches any of the tags
