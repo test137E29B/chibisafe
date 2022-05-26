@@ -207,7 +207,7 @@ class Util {
 				await this.deleteFile(file.name, false);
 			}
 		} catch (error) {
-			log.error(error);
+			log.error(JSON.stringify(error));
 		}
 	}
 
