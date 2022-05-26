@@ -13,29 +13,29 @@ export const state = () => ({
 export const actions = {
 	async fetchSettings({ commit }) {
 		// ! This is causing problems
-		// const response = await this.$axios.$get('service/config');
-		// commit('setSettings', response);
-		// return response;
+		const response = await this.$axios.$get('service/config');
+		commit('setSettings', response);
+		return response;
 
 		// Return a default for now until this is fixed
-		commit('setSettings', {
-			config: {
-				version: '4.0.2',
-				serviceName: 'EternalRage',
-				maxUploadSize: 5000,
-				filenameLength: 12,
-				albumLinkLength: 6,
-				chunkSize: 90,
-				publicMode: false,
-				userAccounts: false,
-				metaThemeColor: '#3498db',
-				metaDescription: 'Image hosting for Internal EternalRage Stuff',
-				metaKeywords: 'EternalRage,Roleplay',
-				domain: 'https://images.eternalrage.net',
-				deleteExpiredFilesEnabled: true,
-				deleteExpiredFilesAfter: 10080
-			}
-		});
+		// commit('setSettings', {
+		// 	config: {
+		// 		version: '4.0.2',
+		// 		serviceName: 'EternalRage',
+		// 		maxUploadSize: 5000,
+		// 		filenameLength: 12,
+		// 		albumLinkLength: 6,
+		// 		chunkSize: 90,
+		// 		publicMode: false,
+		// 		userAccounts: false,
+		// 		metaThemeColor: '#3498db',
+		// 		metaDescription: 'Image hosting for Internal EternalRage Stuff',
+		// 		metaKeywords: 'EternalRage,Roleplay',
+		// 		domain: 'https://images.eternalrage.net',
+		// 		deleteExpiredFilesEnabled: true,
+		// 		deleteExpiredFilesAfter: 10080
+		// 	}
+		// });
 	}
 };
 
